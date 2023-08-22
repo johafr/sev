@@ -1,8 +1,8 @@
 "use client"
-import useDummyData from "@/service/api/useDummyData"
+import useCountries from "@/service/api/useCountries"
 
-const Industry = () => {
-  const { dummydata, isLoading, error } = useDummyData()
+const Methodology = () => {
+  const { countries, isLoading, error } = useCountries()
 
   return (
     <div>
@@ -14,7 +14,7 @@ const Industry = () => {
       ) : (
         <div>
           res:
-          {dummydata.map((entry: any, key: number) => (
+          {countries.map((entry: any, key: number) => (
             <p key={key}>{entry.name}</p>
           ))}
         </div>
@@ -23,4 +23,4 @@ const Industry = () => {
   )
 }
 
-export default Industry
+export default Methodology
