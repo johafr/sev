@@ -3,32 +3,21 @@
 import FilterButton from "@/components/FilterButton"
 import FilterField from "@/components/FilterField"
 import Table from "@/components/Table"
-import useCompanies from "@/service/api/useCompanies"
-import useCountries from "@/service/api/useCountries"
-import { MainPageFiltersEnum } from "@/utils/enums"
+import getCompanies from "@/service/api/getCompanies"
+import getCountries from "@/service/api/getCountries"
+import { CompanyFilterEnum } from "@/utils/enums"
+import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useState } from "react"
 
 export default function Home() {
-  const {
-    countries,
-    isLoading: countriesIsLoading,
-    error: fetchCountryError,
-  } = useCountries()
-  const {
-    companies,
-    isLoading: companiesIsLoading,
-    error: fetchCompanyError,
-  } = useCompanies()
+  const { data: countries } = useQuery(["countries"], getCountries)
+  const { data: companies } = useQuery(["companies"], getCompanies)
 
-  const [activeFilterIndex, setActiveFilterIndex] = useState<number>(0)
+  const [activeFilter, setActiveFilter] = useState<CompanyFilterEnum>(
+    CompanyFilterEnum.ALL
+  )
   const [activeCountryIndex, setActiveCountryIndex] = useState(0)
-
-  const mainPageFilterValues = Object.values(MainPageFiltersEnum)
-
-  function handleSetActiveFilterIndex(index: number) {
-    setActiveFilterIndex(index)
-  }
 
   return (
     <main>
@@ -62,65 +51,60 @@ export default function Home() {
           <FilterField
             label="Search for companies"
             placeholder="Enter company name"
-            listOptions={companies}
+            listOptions={companies ?? []}
             size="full"
           />
           <FilterField
             label="Select country"
             placeholder="Enter Country"
-            listOptions={countries}
+            listOptions={countries ?? []}
             size="small"
             align="right"
           />
         </div>
         <div className="grid grid-cols-6 mt-4 gap-6">
           <FilterButton
-            text={`Top 10 by ${MainPageFiltersEnum.COUNTRY}`}
-            isActive={activeFilterIndex === 0}
-            onClick={() => handleSetActiveFilterIndex(0)}
+            text={`Top 10 by ${CompanyFilterEnum.COUNTRY}`}
+            isActive={activeFilter === CompanyFilterEnum.COUNTRY}
+            onClick={() => setActiveFilter(CompanyFilterEnum.COUNTRY)}
           />
           <FilterButton
-            text={`Top 10 by ${MainPageFiltersEnum.INDUSTRY}`}
-            isActive={activeFilterIndex === 1}
-            onClick={() => handleSetActiveFilterIndex(1)}
+            text={`Top 10 by ${CompanyFilterEnum.INDUSTRY}`}
+            isActive={activeFilter === CompanyFilterEnum.INDUSTRY}
+            onClick={() => setActiveFilter(CompanyFilterEnum.INDUSTRY)}
           />
           <FilterButton
-            text={`Top 10 by ${MainPageFiltersEnum.NET_CHANGE_YOY}`}
-            isActive={activeFilterIndex === 2}
-            onClick={() => handleSetActiveFilterIndex(2)}
+            text={`Top 10 by ${CompanyFilterEnum.NET_CHANGE_YOY}`}
+            isActive={activeFilter === CompanyFilterEnum.NET_CHANGE_YOY}
+            onClick={() => setActiveFilter(CompanyFilterEnum.NET_CHANGE_YOY)}
           />
           <FilterButton
-            text={`Top 10 by ${MainPageFiltersEnum.EXTERNALITY_MARGINS}`}
-            isActive={activeFilterIndex === 3}
-            onClick={() => handleSetActiveFilterIndex(3)}
+            text={`Top 10 by ${CompanyFilterEnum.EXTERNALITY_MARGINS}`}
+            isActive={activeFilter === CompanyFilterEnum.EXTERNALITY_MARGINS}
+            onClick={() =>
+              setActiveFilter(CompanyFilterEnum.EXTERNALITY_MARGINS)
+            }
           />
-          <FilterButton
-            text="[TBU]"
-            isActive={activeFilterIndex === 4}
-            onClick={() => handleSetActiveFilterIndex(4)}
-          />
-          <FilterButton
-            text="[TBU]"
-            isActive={activeFilterIndex === 5}
-            onClick={() => handleSetActiveFilterIndex(5)}
-          />
+          {/* To be implemented */}
+          <FilterButton text="[TBU]" isActive={false} onClick={() => null} />
+          <FilterButton text="[TBU]" isActive={false} onClick={() => null} />
         </div>
         {/* Add datafetcher */}
-        {countries.length > 0 && (
+        {countries && countries.length > 0 && (
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium">
                 Top 10 in {countries[activeCountryIndex]?.name} by{" "}
-                {mainPageFilterValues[activeFilterIndex]}
+                {activeFilter}
               </p>
-              <Table entries={companies} classname="mt-2" />
+              <Table entries={companies ?? []} classname="mt-2" />
             </div>
             <div>
               <p className="text-sm font-medium">
                 Bottom 10 in {countries[activeCountryIndex]?.name} by{" "}
-                {mainPageFilterValues[activeFilterIndex]}
+                {activeFilter}
               </p>
-              <Table entries={companies} classname="mt-2" />
+              <Table entries={companies ?? []} classname="mt-2" />
             </div>
           </div>
         )}

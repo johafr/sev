@@ -9,12 +9,12 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      Company: {
+      company: {
         Row: {
           country_id: string
           created_at: string
           Externalities: number
-          id: number
+          id: string
           industry_id: number | null
           Intensity: number | null
           name: string
@@ -23,7 +23,7 @@ export interface Database {
           country_id: string
           created_at?: string
           Externalities?: number
-          id?: number
+          id?: string
           industry_id?: number | null
           Intensity?: number | null
           name?: string
@@ -32,27 +32,27 @@ export interface Database {
           country_id?: string
           created_at?: string
           Externalities?: number
-          id?: number
+          id?: string
           industry_id?: number | null
           Intensity?: number | null
           name?: string
         }
         Relationships: [
           {
-            foreignKeyName: "Company_country_id_fkey"
+            foreignKeyName: "company_country_id_fkey"
             columns: ["country_id"]
-            referencedRelation: "Country"
+            referencedRelation: "country"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Company_industry_id_fkey"
+            foreignKeyName: "company_industry_id_fkey"
             columns: ["industry_id"]
-            referencedRelation: "Industry"
+            referencedRelation: "industry"
             referencedColumns: ["id"]
           }
         ]
       }
-      Country: {
+      country: {
         Row: {
           created_at: string
           Currency: string
@@ -73,7 +73,7 @@ export interface Database {
         }
         Relationships: []
       }
-      Industry: {
+      industry: {
         Row: {
           created_at: string
           id: number

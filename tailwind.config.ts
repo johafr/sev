@@ -17,7 +17,16 @@ const config: Config = {
           gray: {
             10: "#f2f2f2",
           },
+          orange: {
+            100: "#ed7d31",
+          },
         },
+      },
+      gridTemplateRows: {
+        "auto-1fr": "auto 1fr",
+      },
+      borderStyle: {
+        dashed: "dashed",
       },
     },
   },
