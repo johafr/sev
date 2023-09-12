@@ -1,15 +1,10 @@
+import { IndustryInterface } from "@/utils/types/types"
 import { supabase } from "../supabase"
 
-export interface IndustryInterface {
-  created_at: string
-  id: number
-  name: string | null
-}
-
-const getIndustries = async (): Promise<IndustryInterface[] | null> => {
+const getIndustries = async (): Promise<IndustryInterface[]> => {
   const { data } = await supabase.from("industry").select("*")
 
-  return data
+  return data ?? []
 }
 
 export default getIndustries

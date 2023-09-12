@@ -1,10 +1,13 @@
 import { CompanyInterface } from "@/utils/types/types"
 import { supabase } from "../supabase"
 
-const getCompanies = async (): Promise<CompanyInterface[]> => {
+const getRelatedCompanies = async (
+  activeCompanyId: string
+): Promise<CompanyInterface[]> => {
+  // Update when relation is implemented
   const { data } = await supabase.from("company").select("*")
 
   return data ?? []
 }
 
-export default getCompanies
+export default getRelatedCompanies

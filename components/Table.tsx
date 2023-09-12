@@ -1,9 +1,9 @@
-import { CompaniesInterface } from "@/service/api/getCompanies"
+import { CompanyInterface } from "@/utils/types/types"
 import classNames from "classnames"
 
 type TableProps = {
   //Needs to be updated with a company endpoint in the backend
-  entries: Array<CompaniesInterface>
+  entries: Array<CompanyInterface>
   classname?: string
   isFirstActive?: boolean
 }

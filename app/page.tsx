@@ -6,6 +6,7 @@ import Table from "@/components/Table"
 import getCompanies from "@/service/api/getCompanies"
 import getCountries from "@/service/api/getCountries"
 import { CompanyFilterEnum } from "@/utils/enums"
+import { CompanyInterface } from "@/utils/types/types"
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useState } from "react"
@@ -17,7 +18,17 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState<CompanyFilterEnum>(
     CompanyFilterEnum.ALL
   )
-  const [activeCountryIndex, setActiveCountryIndex] = useState(0)
+
+  const [activeCountryName, setActiveCountry] = useState<string>()
+  const [filteredCompanies, setFilteredCompanies] = useState<
+    CompanyInterface[]
+  >([])
+
+  function handleUpdateActiveFilter(filter: CompanyFilterEnum) {
+    filter === activeFilter
+      ? setActiveFilter(CompanyFilterEnum.ALL)
+      : setActiveFilter(filter)
+  }
 
   return (
     <main>
@@ -53,6 +64,7 @@ export default function Home() {
             placeholder="Enter company name"
             listOptions={companies ?? []}
             size="full"
+            emitName={(name) => setActiveCountry(name)}
           />
           <FilterField
             label="Select country"
@@ -60,29 +72,32 @@ export default function Home() {
             listOptions={countries ?? []}
             size="small"
             align="right"
+            emitName={(name) => setActiveCountry(name)}
           />
         </div>
         <div className="grid grid-cols-6 mt-4 gap-6">
           <FilterButton
             text={`Top 10 by ${CompanyFilterEnum.COUNTRY}`}
             isActive={activeFilter === CompanyFilterEnum.COUNTRY}
-            onClick={() => setActiveFilter(CompanyFilterEnum.COUNTRY)}
+            onClick={() => handleUpdateActiveFilter(CompanyFilterEnum.COUNTRY)}
           />
           <FilterButton
             text={`Top 10 by ${CompanyFilterEnum.INDUSTRY}`}
             isActive={activeFilter === CompanyFilterEnum.INDUSTRY}
-            onClick={() => setActiveFilter(CompanyFilterEnum.INDUSTRY)}
+            onClick={() => handleUpdateActiveFilter(CompanyFilterEnum.INDUSTRY)}
           />
           <FilterButton
             text={`Top 10 by ${CompanyFilterEnum.NET_CHANGE_YOY}`}
             isActive={activeFilter === CompanyFilterEnum.NET_CHANGE_YOY}
-            onClick={() => setActiveFilter(CompanyFilterEnum.NET_CHANGE_YOY)}
+            onClick={() =>
+              handleUpdateActiveFilter(CompanyFilterEnum.NET_CHANGE_YOY)
+            }
           />
           <FilterButton
             text={`Top 10 by ${CompanyFilterEnum.EXTERNALITY_MARGINS}`}
             isActive={activeFilter === CompanyFilterEnum.EXTERNALITY_MARGINS}
             onClick={() =>
-              setActiveFilter(CompanyFilterEnum.EXTERNALITY_MARGINS)
+              handleUpdateActiveFilter(CompanyFilterEnum.EXTERNALITY_MARGINS)
             }
           />
           {/* To be implemented */}
@@ -94,15 +109,17 @@ export default function Home() {
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium">
-                Top 10 in {countries[activeCountryIndex]?.name} by{" "}
-                {activeFilter}
+                {`Top 10 ${activeCountryName && "in " + activeCountryName} ${
+                  activeFilter !== CompanyFilterEnum.ALL
+                    ? "by " + activeFilter
+                    : ""
+                }`}
               </p>
               <Table entries={companies ?? []} classname="mt-2" />
             </div>
             <div>
               <p className="text-sm font-medium">
-                Bottom 10 in {countries[activeCountryIndex]?.name} by{" "}
-                {activeFilter}
+                Bottom 10 in {activeCountryName} by {activeFilter}
               </p>
               <Table entries={companies ?? []} classname="mt-2" />
             </div>

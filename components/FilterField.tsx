@@ -1,6 +1,6 @@
 import { Combobox } from "@headlessui/react"
 import classNames from "classnames"
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 
 type FilterFieldProps = {
   label?: string
@@ -8,6 +8,7 @@ type FilterFieldProps = {
   listOptions: Array<any>
   size?: "small" | "medium" | "large" | "full"
   align?: "left" | "center" | "right"
+  emitName: (name: string) => void
 }
 
 const FilterField = ({
@@ -16,6 +17,7 @@ const FilterField = ({
   listOptions,
   size,
   align,
+  emitName,
 }: FilterFieldProps) => {
   const [selectedItem, setSelectedItem] = useState()
   const [query, setQuery] = useState("")
@@ -26,6 +28,11 @@ const FilterField = ({
       : listOptions
           .map((rawItem) => rawItem.name)
           .filter((item) => item.toLowerCase().includes(query.toLowerCase()))
+
+  useEffect(() => {
+    const newName = selectedItem ?? ""
+    emitName(newName)
+  }, [emitName, selectedItem])
 
   return (
     <div
@@ -52,7 +59,7 @@ const FilterField = ({
           />
           <Combobox.Options
             className={classNames(
-              "absolute bg-white max-h-32 overflow-auto shadow-lg rounded mt-2",
+              "absolute bg-white max-h-32 overflow-auto shadow-lg rounded mt-2 z-10",
               size === "small" && "w-64",
               size === "full" && "w-1/2",
               align === "right" && "right-0"
