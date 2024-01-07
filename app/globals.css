@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+table th {
+  @apply font-medium;
+  @apply border-white border-r border-b;
+}
